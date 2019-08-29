@@ -1,0 +1,40 @@
+{
+  "messages": [ {
+    "_id": 1,
+    "text": "Hello developer",
+    "user": {
+      "_id": 2,
+      "name": "Bot",
+      "avatar": "https://placeimg.com/140/140/any"
+    }
+  },
+    {
+      "_id": 2,
+      "text": "Hello bot",
+      "user": {
+        "_id": 1,
+        "name": "An Le",
+        "avatar": "https://placeimg.com/140/140/any"
+      }
+    },
+    {
+      "_id": 3,
+      "text": "How are you today?",
+      "user": {
+        "_id": 2,
+        "name": "Bot",
+        "avatar": "https://placeimg.com/140/140/any"
+      }
+    },
+    {
+      "_id": 4,
+      "text": "Good",
+      "user": {
+        "_id": 1,
+        "name": "An Le",
+        "avatar": "https://placeimg.com/140/140/any"
+      }
+    }
+  ]
+}
+
