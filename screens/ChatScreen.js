@@ -25,9 +25,7 @@ export default class ChatScreen extends Component {
     this.listenOnChangeMessages();
   };
 
-  readMessages = (snapshotData) => {
-    return ( typeof snapshotData === 'object' && Object.values(snapshotData) ) || snapshotData;
-  };
+  readMessages = snapshotData => ( typeof snapshotData === 'object' && Object.values(snapshotData) ) || snapshotData;
 
   fetchMessages = async () => {
     const snapshot = await database.ref('/messages').once('value');
