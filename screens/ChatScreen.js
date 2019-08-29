@@ -13,7 +13,7 @@ export default class ChatScreen extends Component {
   constructor(props) {
     super(props);
     const { navigation } = this.props;
-    const userName = navigation.getParam('userName', 'anonymous');
+    const userName = navigation.getParam('userName', 'Anonymous') || 'Anonymous';
     this.state = {
       messages: [],
       userName,
@@ -22,55 +22,47 @@ export default class ChatScreen extends Component {
 
   componentDidMount() {
     this.fetchMessages();
-    this.listenOnChange();
+    this.listenOnChangeMessages();
   };
 
-  getMessages = (snapshotData) => {
-    return (typeof snapshotData === 'object' && Object.values(snapshotData)) || snapshotData;
+  readMessages = (snapshotData) => {
+    return ( typeof snapshotData === 'object' && Object.values(snapshotData) ) || snapshotData;
   };
 
   fetchMessages = async () => {
-    const messageRef = database.ref('/messages');
-    const snapshot = await messageRef.once('value');
-    const messages = this.getMessages(snapshot.val());
-    this.setState({messages});
+    const snapshot = await database.ref('/messages').once('value');
+    const messages = this.readMessages(snapshot.val());
+    this.setState({ messages });
   };
 
-  listenOnChange = () => {
-    const messageRef = database.ref('/messages');
-    messageRef.on('value', snapshot => {
-      const messages = this.getMessages(snapshot.val());
-      this.setState({messages});
-    })
+  listenOnChangeMessages = () => {
+    database.ref('/messages').on('value', (snapshot) => {
+      const messages = this.readMessages(snapshot.val());
+      this.setState({ messages });
+    });
   };
 
-  async onSend(messages = []) {
-    const {userName} = this.state;
-    await this.setState(previousState => ({
+  onSend(messages = []) {
+    const { userName } = this.state;
+    const newMessage = messages[0];
+    const { user } = newMessage;
+    user.name = userName;
+    user.avatar = "https://placeimg.com/140/140/any";
+    this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }));
-    const {text} = messages[0];
-    const message = {
-      _id: this.state.messages.length,
-      text,
-      user: {
-        _id: 1,
-        name: userName,
-        avatar: "https://placeimg.com/140/140/any"
-      }
-    };
-    database.ref('messages').push(message);
+    database.ref('/messages').push(newMessage);
   }
 
   render() {
     return (
       <GiftedChat
-        messages={this.state.messages}
-        onSend={messages => this.onSend(messages)}
+        messages={ this.state.messages }
+        onSend={ messages => this.onSend(messages) }
         user={{
           _id: 1,
         }}
-        inverted={false}
+        inverted={ false }
       />
     );
   }
